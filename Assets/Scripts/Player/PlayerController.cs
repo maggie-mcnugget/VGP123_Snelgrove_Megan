@@ -1,33 +1,61 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 
 public class PlayerController : MonoBehaviour
+
+
 {
-    private Rigidbody2D rb;
+   // public GameObject GroundCheckTransform;
+    public LayerMask groundlayer;
+    
 
     public float moveSpeed = 5f;
     public float jumpForce = 10f;
+    public float GroundCheckRadius = 0.2f;
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private Rigidbody2D _rb;
+    private Collider2D _collider;
+    private bool _isGrounded = false;
+    private Vector2 groundCheckPos => CalculateGroundCheck();
+
+    private Vector2 CalculateGroundCheck()
     {
-        rb = GetComponent<Rigidbody2D>();
+        Bounds bounds = _collider.bounds;
+        return new Vector2(bounds.center.x, bounds.min.y);
+    }
+
+// Start is called once before the first execution of Update after the MonoBehaviour is created
+void Start()
+    {
+        _rb = GetComponent<Rigidbody2D>();
+        _collider = GetComponent<Collider2D>();
+
+       // if (GroundCheckTransform == null)
+           // (
+               // GroundCheckTransform = new GameObject ("GroundCheck")
+               // GroundCheckTransform.transform.SetParent(transform);
+        //GroundCheckTransform.transform.localPosition = Vector3.zero;
+       // )
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        _isGrounded = Physics2D.OverlapCircle(groundCheckPos, GroundCheckRadius, groundlayer);
+
         float horizontalInput = Input.GetAxis("Horizontal");
         bool jumpInput = Input.GetButtonDown("Jump");
 
-        Vector2 velocity = rb.linearVelocity;
+        Vector2 velocity = _rb.linearVelocity;
         velocity.x = horizontalInput * moveSpeed;
-        rb.linearVelocity = velocity;
+        _rb.linearVelocity = velocity;
 
-        if (jumpInput )
+        if (jumpInput && _isGrounded)
         {
-            rb.AddForce(new Vector2(0,jumpForce), ForceMode2D.Impulse);
+            _rb.AddForce(new Vector2(0,jumpForce), ForceMode2D.Impulse);
         }
     }
 }
