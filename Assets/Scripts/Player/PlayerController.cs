@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(SpriteRenderer))]
@@ -14,6 +15,77 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 10f;
 
+    [Header("Powerup Settings")]
+    public float initialPowerupDuration = 5f;
+    public float powerupJumpForce = 20f;
+
+    private float currentPowerupDuration = 0f;
+    private float initialJumpForce = 7f;
+    private Coroutine jumpforceCoroutine = null;
+
+    public void JumpForceChange()
+    {
+        if (jumpforceCoroutine != null)
+        {
+            StopCoroutine(jumpforceCoroutine);
+            jumpforceCoroutine = null;
+            jumpForce = 7f;
+        }
+    }
+
+    IEnumerator JumpForceChangeCoroutine()
+    {
+        currentPowerupDuration = initialPowerupDuration + currentPowerupDuration;
+        jumpForce = powerupJumpForce;
+        while (currentPowerupDuration > 0)
+        {
+            currentPowerupDuration -= Time.deltaTime;
+            yield return null;
+        }
+        jumpForce = initialJumpForce;
+        jumpforceCoroutine = null;
+        currentPowerupDuration = 0;
+    }
+
+    private int _lives = 3;
+    private int maxLives = 5;
+
+    public int lives
+    {
+        get => _lives;
+        set
+        {
+            if (value < 0)
+            {
+                //gameover logic here
+                Debug.Log("Game Over!");
+                return;
+            }
+            if (value > maxLives)
+            {
+                _lives = maxLives;
+            }
+            else
+            {
+                _lives = value;
+            }
+            Debug.Log("life pickup collected: Lives:" + _lives);
+        }
+    }
+
+    //public void SetLives(int valueToAdd)
+    //{
+    //    lives += valueToAdd;
+    //    if (lives > maxLives)
+     //   {
+     //       lives = maxLives;
+     //   }
+    //    if (lives < 0)
+    //    {
+   //         //gameover logic
+   //     }
+
+   // }
 
     private Rigidbody2D _rb;
     private Collider2D _collider;
@@ -36,6 +108,8 @@ public class PlayerController : MonoBehaviour
 
         _groundCheck = new GroundCheck(_collider, _rb, groundCheckRadius, groundLayer);
 
+        initialJumpForce = jumpForce;
+
         ////initalize the ground check object here rather than in the inpsector for safety - only if we use a gameobject to get our foot position
         //if (groundCheckTransform == null)
         //{
@@ -54,7 +128,7 @@ public class PlayerController : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxisRaw("Vertical");
         bool jumpInput = Input.GetButtonDown("Jump");
-        bool attackInput = Input.GetButton("Attack");
+        bool attackInput = Input.GetButtonDown("Attack");
         bool fireInput = Input.GetButtonDown("Fire");
 
         if (!_isFiring)
@@ -111,5 +185,15 @@ public class PlayerController : MonoBehaviour
     public void ResetFireAnimation()
     {
         _isFiring = false;
+    }
+    public void FireProjectile()
+    {
+        if (!_isFiring) return;
+
+        Shoot shoot = GetComponent<Shoot>();
+        if (shoot != null)
+        {
+            shoot.Fire();
+        }
     }
 }
