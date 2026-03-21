@@ -4,6 +4,8 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
 public class Projectile : MonoBehaviour
 {
+    [SerializeField] private ProjectileType type = ProjectileType.PlayerProjectile;
+
     [SerializeField, Range(0.5f, 10f)]
     private float lifetime = 10f;
 
@@ -41,9 +43,26 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall"))
+        if (type == ProjectileType.PlayerProjectile)
         {
-            Destroy(gameObject);
+            BaseEnemy enemy = collision.gameObject.GetComponent<BaseEnemy>();
+
+            if (enemy != null)
+            {
+                enemy.TakeDamage(10);
+                Destroy(gameObject);
+            }
+
+            if (collision.gameObject.CompareTag("Wall"))
+            {
+                Destroy(gameObject);
+            }
         }
+    }
+
+    public enum ProjectileType
+    {
+        PlayerProjectile,
+        EnemyProjectile
     }
 }

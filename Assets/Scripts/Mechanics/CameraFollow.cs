@@ -4,6 +4,7 @@ public class CameraFollow : MonoBehaviour
 {
     [SerializeField] private float minXPos;
     [SerializeField] private float maxXPos;
+    [SerializeField] private Vector3 offset;
 
     //private - private to the class - you would use this for variables and methods that should not be accessible outside this class
     //public - global access - you would use this for variables and methods that need to be accessed from other classes.

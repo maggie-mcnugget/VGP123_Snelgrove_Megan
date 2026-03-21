@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Xml.Serialization;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(SpriteRenderer))]
@@ -31,12 +32,14 @@ public class PlayerController : MonoBehaviour
             jumpforceCoroutine = null;
             jumpForce = 7f;
         }
+        jumpforceCoroutine = StartCoroutine(JumpForceChangeCoroutine());
     }
 
     IEnumerator JumpForceChangeCoroutine()
     {
         currentPowerupDuration = initialPowerupDuration + currentPowerupDuration;
         jumpForce = powerupJumpForce;
+
         while (currentPowerupDuration > 0)
         {
             currentPowerupDuration -= Time.deltaTime;
@@ -194,6 +197,16 @@ public class PlayerController : MonoBehaviour
         if (shoot != null)
         {
             shoot.Fire();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag ("Squish") && _rb.linearVelocityY <0)
+        {
+            collision.GetComponentInParent<BaseEnemy>().TakeDamage(0, DamageType.JumpedOn);
+            _rb.linearVelocityY = 0;
+            _rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
     }
 }
