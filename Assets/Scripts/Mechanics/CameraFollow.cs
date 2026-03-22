@@ -15,18 +15,17 @@ public class CameraFollow : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //MAKE YOUR CODE DEFENSIVE AGAINST BAD INPUT
-        if (!target)
-        {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameManager.Instance.OnPlayerSpawned += OnPlayerSpawnedCallBack;
 
-            if (!player)
-            {
-                Debug.LogError("CameraFollow: No GameObject with tag Player exists!");
-                return;
-            }
-            target = player.transform;
+        if (GameManager.Instance.PlayerInstance != null)
+        {
+            target = GameManager.Instance.PlayerInstance.transform;
         }
+    }
+
+    private void OnPlayerSpawnedCallBack(PlayerController player)
+    {
+        target = player.transform;
     }
 
 

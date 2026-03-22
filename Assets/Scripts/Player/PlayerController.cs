@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
         currentPowerupDuration = 0;
     }
 
-    private int _lives = 3;
+   /* private int _lives = 3;
     private int maxLives = 5;
 
     public int lives
@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("life pickup collected: Lives:" + _lives);
         }
     }
-
+    */
     //public void SetLives(int valueToAdd)
     //{
     //    lives += valueToAdd;

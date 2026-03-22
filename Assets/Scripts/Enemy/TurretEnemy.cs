@@ -17,14 +17,20 @@ public class TurretEnemy : BaseEnemy
 
         shoot = GetComponent<Shoot>();
 
-        
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
+        // subscribe to player spawn event
+        GameManager.Instance.OnPlayerSpawned += OnPlayerSpawned;
+
+        // ALSO handle case where player already exists
+        if (GameManager.Instance.PlayerInstance != null)
         {
-            player = playerObj.transform;
+            player = GameManager.Instance.PlayerInstance.transform;
         }
     }
 
+    private void OnPlayerSpawned(PlayerController pc)
+    {
+        player = pc.transform;
+    }
     void Update()
     {
         if (player == null) return;

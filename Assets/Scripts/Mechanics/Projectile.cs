@@ -43,6 +43,7 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+ 
         if (type == ProjectileType.PlayerProjectile)
         {
             BaseEnemy enemy = collision.gameObject.GetComponent<BaseEnemy>();
@@ -51,12 +52,24 @@ public class Projectile : MonoBehaviour
             {
                 enemy.TakeDamage(10);
                 Destroy(gameObject);
+                return;
             }
+        }
 
-            if (collision.gameObject.CompareTag("Wall"))
+        if (type == ProjectileType.EnemyProjectile)
+        {
+            if (collision.gameObject.CompareTag("Player"))
             {
+                GameManager.Instance.Lives--;
                 Destroy(gameObject);
+                return;
             }
+        }
+
+      
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            Destroy(gameObject);
         }
     }
 
