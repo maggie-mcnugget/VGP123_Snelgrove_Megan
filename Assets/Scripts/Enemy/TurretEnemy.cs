@@ -5,28 +5,38 @@ public class TurretEnemy : BaseEnemy
 {
     Shoot shoot;
 
-    [SerializeField] private float fireRate = 2f; // Shots per second
+    [SerializeField] private float fireRate = 2f;
+    [SerializeField] private float distanceThreshold = 5f;
+
     private float timeSinceLastFire = 0f;
+    private Transform player;
 
-    private PlayerController playerRef;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     public override void Start()
     {
         base.Start();
 
         shoot = GetComponent<Shoot>();
 
-        if (fireRate <= 0)
+        
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
         {
-            fireRate = 2f;
-            Debug.LogWarning("Fire rate must be greater than 0. Setting fire rate to default value of 2 shots per second.");
+            player = playerObj.transform;
         }
     }
 
-
     void Update()
     {
+        if (player == null) return;
+
+    
+        float distance = Vector2.Distance(transform.position, player.position);
+
+        if (distance > distanceThreshold +0.5f)
+            return;
+
+    
+        sr.flipX = player.position.x < transform.position.x;
 
         AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
 
@@ -39,5 +49,4 @@ public class TurretEnemy : BaseEnemy
             }
         }
     }
-
 }
