@@ -49,6 +49,7 @@ public abstract class BaseEnemy : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             GameManager.Instance.Lives--;
+            AudioManager.Instance.PlayDamage();
         }
     }
 }

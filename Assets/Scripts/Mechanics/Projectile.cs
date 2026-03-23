@@ -51,6 +51,7 @@ public class Projectile : MonoBehaviour
             if (enemy != null)
             {
                 enemy.TakeDamage(10);
+                AudioManager.Instance.PlayEnemyDamage();
                 Destroy(gameObject);
                 return;
             }
@@ -61,6 +62,7 @@ public class Projectile : MonoBehaviour
             if (collision.gameObject.CompareTag("Player"))
             {
                 GameManager.Instance.Lives--;
+                AudioManager.Instance.PlayDamage();
                 Destroy(gameObject);
                 return;
             }

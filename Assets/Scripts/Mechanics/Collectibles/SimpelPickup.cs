@@ -15,7 +15,7 @@ public class SimplePickup : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             PlayerController pc = collision.GetComponent<PlayerController>();
-
+            AudioManager.Instance.PlayPickup();
             switch (pickupType)
             {
                 case PickupType.Life:

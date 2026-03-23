@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 [DefaultExecutionOrder(-100)]
 public class GameManager : MonoBehaviour
 {
+
+
     public delegate void PlayerInstanceDelegate(PlayerController player);
     public event PlayerInstanceDelegate OnPlayerSpawned;
 
@@ -21,6 +23,7 @@ public class GameManager : MonoBehaviour
             return;
         }
         Destroy(gameObject);
+
     }
 
     #endregion
@@ -37,6 +40,7 @@ public class GameManager : MonoBehaviour
             if (value < 0)
             {
                 GameOver();
+               
                 SceneManager.LoadScene("GameOver");
                 return;
             }
@@ -60,17 +64,17 @@ public class GameManager : MonoBehaviour
     public PlayerController PlayerInstance => _playerInstance;
     private Vector3 currentCheckpoint;
 
-
+ 
     // Update is called once per frame
     void Update()
     {
-
+ 
         //Debug toggle to go between scenes
         if (Input.GetKeyDown(KeyCode.Return))
         {
             string currentSceneName = SceneManager.GetActiveScene().name;
             string sceneToLoad = currentSceneName == "Title" ? "Game" : "Title";
-
+       
             SceneManager.LoadScene(sceneToLoad);
         }
 
@@ -89,6 +93,7 @@ public class GameManager : MonoBehaviour
         UpdateCheckpoint(spawnPos);
 
         OnPlayerSpawned?.Invoke(_playerInstance);
+    
     }
 
     public void UpdateCheckpoint(Vector3 newCheckpoint) => currentCheckpoint = newCheckpoint;
@@ -103,8 +108,9 @@ public class GameManager : MonoBehaviour
     }
     public void ResetGame()
     {
-        _lives = 3; 
+        _lives = 3;
         _playerInstance = null;
     }
 }
+
 

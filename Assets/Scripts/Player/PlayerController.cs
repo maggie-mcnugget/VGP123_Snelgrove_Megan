@@ -149,11 +149,13 @@ public class PlayerController : MonoBehaviour
         if (jumpInput && _isGrounded)
         {
             _rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+            AudioManager.Instance.PlayJump();
         }
 
         if (fireInput && !_isFiring)
         {
             _isFiring = true;
+            AudioManager.Instance.PlayThrow();
         }
 
         if (!_isGrounded && attackInput)
@@ -207,6 +209,7 @@ public class PlayerController : MonoBehaviour
             collision.GetComponentInParent<BaseEnemy>().TakeDamage(0, DamageType.JumpedOn);
             _rb.linearVelocityY = 0;
             _rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            AudioManager.Instance.PlayEnemyDamage();
         }
     }
 }
